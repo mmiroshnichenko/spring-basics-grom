@@ -16,5 +16,7 @@
     <bean id="step" class="com.lesson2.hw1.Step"></bean>
     <bean id="service" class="com.lesson2.hw1.Service"></bean>
     <bean id="route" class="com.lesson2.hw1.Route"></bean>
+    <bean id="itemService" class="com.lesson2.hw2.service.ItemService"></bean>
+    <bean id="itemDAO" class="com.lesson2.hw2.DAO.ItemDAO"></bean>
 
 </beans>
