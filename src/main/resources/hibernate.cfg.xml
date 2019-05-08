@@ -11,5 +11,7 @@
         <property name="hibernate.enable_lazy_load_no_trans">true</property>
         <property name="show_sql">true</property>
         <mapping class="com.lesson2.hw2.entity.Item"></mapping>
+        <mapping class="com.lesson3.hw.entity.File"></mapping>
+        <mapping class="com.lesson3.hw.entity.Storage"></mapping>
     </session-factory>
 </hibernate-configuration>
