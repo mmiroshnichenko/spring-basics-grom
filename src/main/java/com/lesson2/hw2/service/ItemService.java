@@ -4,9 +4,11 @@ import com.lesson2.hw2.DAO.ItemDAO;
 import com.lesson2.hw2.entity.Item;
 import com.lesson2.hw2.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+@Service
 public class ItemService {
     @Autowired
     private ItemDAO itemDAO;

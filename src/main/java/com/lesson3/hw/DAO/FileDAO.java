@@ -4,9 +4,11 @@ import com.lesson3.hw.entity.File;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class FileDAO extends BaseDAO<File> {
     public FileDAO() {
         super(File.class);

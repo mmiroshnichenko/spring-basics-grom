@@ -3,6 +3,7 @@ package com.lesson2.hw1;
 
 import java.util.List;
 
+@org.springframework.stereotype.Service
 public class Service {
     private Long id;
     private String name;

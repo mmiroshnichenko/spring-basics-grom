@@ -1,7 +1,10 @@
 package com.lesson2.hw1;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Map;
 
+@Component
 public class Step {
     private Long id;
     private Service serviceFrom;

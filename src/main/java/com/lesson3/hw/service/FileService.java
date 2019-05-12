@@ -4,9 +4,11 @@ import com.lesson3.hw.DAO.FileDAO;
 import com.lesson3.hw.entity.File;
 import com.lesson3.hw.entity.Storage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class FileService {
     private FileDAO fileDAO;
 
