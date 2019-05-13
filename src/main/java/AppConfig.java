@@ -10,9 +10,11 @@ import com.lesson3.hw.DAO.StorageDAO;
 import com.lesson3.hw.service.FileService;
 import com.lesson3.hw.service.StorageService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan("com")
 public class AppConfig {
     @Bean
     public OrderService orderService() {
@@ -59,10 +61,12 @@ public class AppConfig {
         return new StorageService(storageDAO());
     }
 
+    @Bean
     public FileDAO fileDAO() {
         return new FileDAO();
     }
 
+    @Bean
     public FileService fileService() {
         return new FileService(fileDAO());
     }
