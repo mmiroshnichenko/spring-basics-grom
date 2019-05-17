@@ -1,5 +1,6 @@
 package com.lesson3.hw.service;
 
+import com.lesson2.hw2.exception.BadRequestException;
 import com.lesson3.hw.DAO.FileDAO;
 import com.lesson3.hw.entity.File;
 import com.lesson3.hw.entity.Storage;
@@ -34,7 +35,13 @@ public class FileService {
     }
 
     public void transferAll(Storage storageFrom, Storage storageTo) throws Exception {
-        putAll(storageTo, storageFrom.getFiles());
+        List<File> files = storageFrom.getFiles();
+        validateFilesList(storageTo, files);
+
+        for (File file : files) {
+            file.setStorage(storageTo);
+        }
+        fileDAO.updateFilesList(files);
     }
 
     public void transferFile(Storage storageFrom, Storage storageTo, long id) throws Exception {
@@ -62,15 +69,6 @@ public class FileService {
         return fileDAO.findById(id);
     }
 
-    private void putAll(Storage storage, List<File> files) throws Exception {
-        validateFilesList(storage, files);
-
-        for (File file : files) {
-            file.setStorage(storage);
-        }
-        fileDAO.updateFilesList(files);
-    }
-
     private static void validateFilesList(Storage storage, List<File> files) throws Exception {
         long filesSize = 0;
         for (File file : files) {
@@ -88,6 +86,9 @@ public class FileService {
     }
 
     private static void validateNewFile(Storage storage, File file) throws Exception {
+        if (file.getName().length() > 10) {
+            throw new BadRequestException("Error: incorrect file name:" + file.getName() + ". File name must be less 10 chars");
+        }
         if (!storage.isSupportedFormat(file.getFormat())) {
             throw new Exception("Error: File(id: " + file.getId() + ") has not supported format '" + file.getFormat()
                     + " in Storage(id: " + storage.getId() + ")");

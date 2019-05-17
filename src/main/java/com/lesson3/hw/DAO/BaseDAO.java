@@ -1,5 +1,6 @@
 package com.lesson3.hw.DAO;
 
+import com.lesson2.hw2.exception.BadRequestException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -58,10 +59,14 @@ public class BaseDAO<T> {
         }
     }
 
-    public T findById(long objectId) throws HibernateException {
+    public T findById(long objectId) throws Exception {
         try (Session session = createSessionFactory().openSession()) {
 
-            return session.get(this.typeOfT, objectId);
+            T object = session.get(this.typeOfT, objectId);
+            if (object == null) {
+                throw new BadRequestException("Error: incorrect objectId:" + objectId);
+            }
+            return object;
         } catch (HibernateException e) {
             throw new HibernateException("Search is failed");
         }
