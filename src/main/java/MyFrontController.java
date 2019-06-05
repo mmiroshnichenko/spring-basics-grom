@@ -1,3 +1,4 @@
+import com.AppConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class MyFrontController  extends AbstractAnnotationConfigDispatcherServletInitializer {
