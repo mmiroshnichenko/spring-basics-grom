@@ -17,4 +17,23 @@ public class ItemDAO {
 
         return item;
     }
+
+    public Item update(Item item) {
+        entityManager.merge(item);
+
+        return item;
+    }
+
+    public void delete(Item item) {
+        entityManager.detach(item);
+    }
+
+    public Item findById(long id) throws BadRequestException {
+        Item item = entityManager.find(Item.class, id);
+        if (item == null) {
+            throw new BadRequestException("Error: incorrect itemId:" + id);
+        }
+
+        return item;
+    }
 }
