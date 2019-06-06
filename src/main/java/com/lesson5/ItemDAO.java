@@ -25,7 +25,6 @@ public class ItemDAO {
     }
 
     public void delete(Item item) {
-        //entityManager.remove(item);
         entityManager.remove(entityManager.contains(item) ? item : entityManager.merge(item));
     }
 
