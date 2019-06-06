@@ -25,7 +25,8 @@ public class ItemDAO {
     }
 
     public void delete(Item item) {
-        entityManager.detach(item);
+        //entityManager.remove(item);
+        entityManager.remove(entityManager.contains(item) ? item : entityManager.merge(item));
     }
 
     public Item findById(long id) throws BadRequestException {
