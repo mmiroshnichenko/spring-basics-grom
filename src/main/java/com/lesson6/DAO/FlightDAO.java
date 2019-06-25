@@ -1,9 +1,14 @@
 package com.lesson6.DAO;
 
+import com.lesson6.entity.Filter;
 import com.lesson6.entity.Flight;
+import com.lesson6.entity.Plane;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -27,5 +32,33 @@ public class FlightDAO extends BaseDAO<Flight> {
                      "WHERE ROWNUM <= 10";
 
         return entityManager.createNativeQuery(sql).getResultList();
+    }
+
+    public List<Flight> flightsByDate(Filter filter) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Flight> criteriaQuery = builder.createQuery(Flight.class);
+        Root<Flight> root = criteriaQuery.from(Flight.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (filter.getDateFrom() != null) {
+            predicates.add(builder.greaterThanOrEqualTo(root.get("dateFlight"), filter.getDateFrom()));
+        }
+        if (filter.getDateTo() != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("dateFlight"), filter.getDateTo()));
+        }
+        if (filter.getCityFrom() != null) {
+            predicates.add(builder.equal(root.get("cityFrom"), filter.getCityFrom()));
+        }
+        if (filter.getCityTo() != null) {
+            predicates.add(builder.equal(root.get("cityTo"), filter.getCityTo()));
+        }
+        if (filter.getModelPlane() != null) {
+            Join<Flight, Plane> planeJoin = root.join("plane");
+            predicates.add(builder.equal(planeJoin.get("model"), filter.getModelPlane()));
+        }
+
+        criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }

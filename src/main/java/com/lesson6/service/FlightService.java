@@ -1,6 +1,7 @@
 package com.lesson6.service;
 
 import com.lesson6.DAO.FlightDAO;
+import com.lesson6.entity.Filter;
 import com.lesson6.entity.Flight;
 import com.lesson6.entity.Passenger;
 import com.lesson6.exception.BadRequestException;
@@ -63,6 +64,10 @@ public class FlightService {
 
     public List<String> mostPopularFrom() {
         return flightDAO.mostPopularFrom();
+    }
+
+    public List<Flight> flightsByDate(Filter filter) {
+        return flightDAO.flightsByDate(filter);
     }
 
     private void setPassengers(Flight flightDb, List<Passenger> flightPassengers) throws Exception {
