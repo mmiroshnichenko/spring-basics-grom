@@ -16,14 +16,23 @@ public class PlaneDAO extends BaseDAO<Plane> {
         super(Plane.class);
     }
 
-    public List<Plane> oldPlanes() {
-        Calendar cal = Calendar.getInstance();
-        Date today = cal.getTime();
-        cal.add(Calendar.YEAR, -20);
-        Date oldYearProduced = cal.getTime();
+    public List<Plane> getPlanesOlderYearProduced(Date yearProduced) {
+        String sql = "SELECT * FROM PLANE WHERE YEAR_PRODUCED < ?1";
 
-        return entityManager.createQuery("SELECT e FROM Plane e WHERE e.yearProduced < :oldYearProduced")
-                .setParameter("oldYearProduced", oldYearProduced, TemporalType.DATE)
+        return entityManager.createNativeQuery(sql, Plane.class)
+                .setParameter(1, yearProduced, TemporalType.DATE)
+                .getResultList();
+    }
+
+    public List<Plane> regularPlanes(int year) {
+        String sql = "SELECT P.* FROM PLANE P " +
+                     "INNER JOIN ( " +
+                     "SELECT PLANE_ID, COUNT(ID) FROM FLIGHT " +
+                     "WHERE EXTRACT(YEAR FROM DATE_FLIGHT) = ?1 " +
+                     "GROUP BY PLANE_ID HAVING COUNT(ID) > 300) F ON F.PLANE_ID = P.ID";
+
+        return entityManager.createNativeQuery(sql, Plane.class)
+                .setParameter(1, year)
                 .getResultList();
     }
 }

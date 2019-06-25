@@ -55,4 +55,24 @@ public class FlightController {
             return e.getMessage();
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/flight/most_popular_to", produces = "text/plain")
+    public @ResponseBody
+    String mostPopularTo() {
+        try {
+            return flightService.mostPopularTo().toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/flight/most_popular_from", produces = "text/plain")
+    public @ResponseBody
+    String mostPopularFrom() {
+        try {
+            return flightService.mostPopularFrom().toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 }

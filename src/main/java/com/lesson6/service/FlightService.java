@@ -57,7 +57,19 @@ public class FlightService {
         return flightDAO.findById(id);
     }
 
+    public List<String> mostPopularTo() {
+        return flightDAO.mostPopularTo();
+    }
+
+    public List<String> mostPopularFrom() {
+        return flightDAO.mostPopularFrom();
+    }
+
     private void setPassengers(Flight flightDb, List<Passenger> flightPassengers) throws Exception {
+        if (flightPassengers == null) {
+            return;
+        }
+
         List<Passenger> passengers = new ArrayList<>();
         for (Passenger flightPassenger: flightPassengers) {
             passengers.add(passengerService.findById(flightPassenger.getId()));

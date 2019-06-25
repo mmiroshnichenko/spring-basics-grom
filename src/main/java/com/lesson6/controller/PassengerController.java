@@ -55,4 +55,14 @@ public class PassengerController {
             return e.getMessage();
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/passenger/regular_passengers", params = {"year"}, produces = "text/plain")
+    public @ResponseBody
+    String regularPassengers(@RequestParam(value = "year") String year) {
+        try {
+            return passengerService.regularPassengers(Integer.parseInt(year)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 }

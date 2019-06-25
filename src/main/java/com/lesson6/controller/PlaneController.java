@@ -55,4 +55,24 @@ public class PlaneController {
             return e.getMessage();
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/plane/old_planes", produces = "text/plain")
+    public @ResponseBody
+    String oldPlanes() {
+        try {
+            return planeService.oldPlanes().toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/plane/regular_planes", params = {"year"}, produces = "text/plain")
+    public @ResponseBody
+    String regularPlanes(@RequestParam(value = "year") String year) {
+        try {
+            return planeService.regularPlanes(Integer.parseInt(year)).toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 }

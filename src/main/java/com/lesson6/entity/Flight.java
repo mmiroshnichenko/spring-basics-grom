@@ -75,4 +75,15 @@ public class Flight {
     public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", plane=" + plane.getCode() +
+                ", dateFlight=" + dateFlight +
+                ", cityFrom='" + cityFrom + '\'' +
+                ", cityTo='" + cityTo + '\'' +
+                '}';
+    }
 }

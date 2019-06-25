@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -45,6 +46,10 @@ public class PassengerService {
 
     public Passenger findById(long id) throws Exception {
         return passengerDAO.findById(id);
+    }
+
+    public List<Passenger> regularPassengers(int year) {
+        return passengerDAO.regularPassengers(year);
     }
 
     private void validate(Passenger passenger) throws BadRequestException {

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -45,6 +48,18 @@ public class PlaneService {
 
     public Plane findById(long id) throws Exception {
         return planeDAO.findById(id);
+    }
+
+    public List<Plane> oldPlanes() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -20);
+        Date oldYearProduced = cal.getTime();
+
+        return planeDAO.getPlanesOlderYearProduced(oldYearProduced);
+    }
+
+    public List<Plane> regularPlanes(int year) {
+        return planeDAO.regularPlanes(year);
     }
 
     private void validate(Plane plane) throws BadRequestException {

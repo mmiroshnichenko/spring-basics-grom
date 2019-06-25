@@ -15,8 +15,8 @@ public class Passenger {
     private List<Flight> flights;
 
     @Id
-    @SequenceGenerator(name = "PSR_SEQ", sequenceName = "PASSENGER_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PSR_SEQ")
+    @SequenceGenerator(name = "PASSENGER_SEQ", sequenceName = "PASSENGER_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PASSENGER_SEQ")
     @Column(name = "ID")
     public long getId() {
         return id;
@@ -73,5 +73,16 @@ public class Passenger {
 
     public void setFlights(List<Flight> flights) {
         this.flights = flights;
+    }
+
+    @Override
+    public String toString() {
+        return "Passenger{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", nationality='" + nationality + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", passportCode='" + passportCode + '\'' +
+                '}';
     }
 }
