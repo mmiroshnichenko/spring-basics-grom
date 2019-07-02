@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class UserController {
+public class UserController extends BaseController{
     private UserService userService;
 
     @Autowired
@@ -95,12 +95,6 @@ public class UserController {
             return userService.findById(Long.parseLong(id)).toString();
         } catch (Exception e) {
             return e.getMessage();
-        }
-    }
-
-    private void checkAuthentication(HttpSession session) throws BadRequestException {
-        if (session.getAttribute("MEMBER") == null) {
-            throw new BadRequestException("Error: user is not authenticated");
         }
     }
 }
