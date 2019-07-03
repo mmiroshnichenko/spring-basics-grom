@@ -31,7 +31,7 @@ public class BaseDAO<T> {
         entityManager.remove(entityManager.contains(object) ? object : entityManager.merge(object));
     }
 
-    public T findById(long id) throws BadRequestException {
+    public T findById(long id) {
         return entityManager.find(this.typeOfT, id);
     }
 }
