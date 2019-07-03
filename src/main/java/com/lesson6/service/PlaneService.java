@@ -23,14 +23,10 @@ public class PlaneService {
     }
 
     public Plane save(Plane plane) throws Exception {
-        validate(plane);
-
         return planeDAO.save(plane);
     }
 
     public Plane update(Plane plane) throws Exception {
-        validate(plane);
-
         Plane planeDb = planeDAO.findById(plane.getId());
         planeDb.setModel(plane.getModel());
         planeDb.setCode(plane.getCode());
@@ -60,23 +56,5 @@ public class PlaneService {
 
     public List<Plane> regularPlanes(int year) {
         return planeDAO.regularPlanes(year);
-    }
-
-    private void validate(Plane plane) throws BadRequestException {
-        if (plane.getModel() == null || plane.getModel().isEmpty()) {
-            throw new BadRequestException("Error: plane Model is required");
-        }
-
-        if (plane.getCode() == null || plane.getCode().isEmpty()) {
-            throw new BadRequestException("Error: plane Code is required");
-        }
-
-        if (plane.getYearProduced() == null) {
-            throw new BadRequestException("Error: plane Year produced is required");
-        }
-
-        if (plane.getAvgFuelConsumption() <= 0 ) {
-            throw new BadRequestException("Error: incorrect Avg Fuel Consumption value");
-        }
     }
 }

@@ -69,8 +69,8 @@ public class Advertisement {
     }
 
     @Column(name = "SUBCATEGORY")
-    public Subcategory getSubcategory() {
-        return subcategory;
+    public String getSubcategory() {
+        return subcategory.toString();
     }
 
     @Transient

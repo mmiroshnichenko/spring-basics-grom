@@ -3,6 +3,7 @@ package com.lesson7_1.service;
 import com.lesson7_1.DAO.AdvertisementDAO;
 import com.lesson7_1.DAO.UserDAO;
 import com.lesson7_1.entity.Advertisement;
+import com.lesson7_1.entity.Filter;
 import com.lesson7_1.exception.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,8 @@ public class AdvertisementService {
 
     public Advertisement save(Advertisement advertisement) throws Exception {
         validate(advertisement);
+
+        advertisement.setUser(userService.findById(advertisement.getUser().getId()));
         Calendar cal = Calendar.getInstance();
         advertisement.setDateCreated(cal.getTime());
         cal.add(Calendar.DATE, 30);
@@ -61,6 +65,10 @@ public class AdvertisementService {
 
     public Advertisement findById(long id) throws Exception {
         return advertisementDAO.findById(id);
+    }
+
+    public List<Advertisement> list(Filter filter) {
+        return advertisementDAO.list(filter);
     }
 
     private void validate(Advertisement advertisement) throws BadRequestException{
