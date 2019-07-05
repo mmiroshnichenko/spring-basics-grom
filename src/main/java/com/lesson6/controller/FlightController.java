@@ -110,4 +110,14 @@ public class FlightController {
             return e.getMessage();
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/flight/flights_by_filter")
+    public @ResponseBody
+    String flightsByFilter(Filter filter) {
+        try {
+            return flightService.flightsByDate(filter).toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 }

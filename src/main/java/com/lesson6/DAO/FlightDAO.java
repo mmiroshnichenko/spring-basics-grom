@@ -14,24 +14,26 @@ import java.util.List;
 @Repository
 @Transactional
 public class FlightDAO extends BaseDAO<Flight> {
+    private static final String findMostPopularToQuery =
+            "SELECT C.city_to FROM (SELECT F.city_to,  COUNT(F.id) AS count_flight FROM FLIGHT F " +
+            "GROUP BY F.city_to ORDER BY count_flight DESC) C " +
+            "WHERE ROWNUM <= 10";
+
+    private static final String findMostPopularFromQuery =
+            "SELECT C.city_from FROM (SELECT F.city_from,  COUNT(F.id) AS count_flight FROM FLIGHT F " +
+            "GROUP BY F.city_from ORDER BY count_flight DESC) C " +
+            "WHERE ROWNUM <= 10";
+
     public FlightDAO() {
         super(Flight.class);
     }
 
     public List<String> mostPopularTo() {
-        String sql = "SELECT C.city_to FROM (SELECT F.city_to,  COUNT(F.id) AS count_flight FROM FLIGHT F " +
-                     "GROUP BY F.city_to ORDER BY count_flight DESC) C " +
-                     "WHERE ROWNUM <= 10";
-
-        return entityManager.createNativeQuery(sql).getResultList();
+        return entityManager.createNativeQuery(findMostPopularToQuery).getResultList();
     }
 
     public List<String> mostPopularFrom() {
-        String sql = "SELECT C.city_from FROM (SELECT F.city_from,  COUNT(F.id) AS count_flight FROM FLIGHT F " +
-                     "GROUP BY F.city_from ORDER BY count_flight DESC) C " +
-                     "WHERE ROWNUM <= 10";
-
-        return entityManager.createNativeQuery(sql).getResultList();
+        return entityManager.createNativeQuery(findMostPopularFromQuery).getResultList();
     }
 
     public List<Flight> flightsByDate(Filter filter) {

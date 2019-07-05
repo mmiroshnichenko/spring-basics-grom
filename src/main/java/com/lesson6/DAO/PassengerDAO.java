@@ -9,20 +9,21 @@ import java.util.List;
 @Repository
 @Transactional
 public class PassengerDAO extends BaseDAO<Passenger> {
+    private static final String findRegularPassengersQuery =
+            "SELECT P.* FROM PASSENGER P " +
+            "INNER JOIN ( " +
+            "SELECT p.id, COUNT(f.id) FROM FLIGHT f " +
+            "INNER JOIN FLIGHT_PASSENGER fp ON fp.flight_id = f.id " +
+            "INNER JOIN PASSENGER p ON p.id = fp.passenger_id " +
+            "WHERE EXTRACT(YEAR FROM f.date_flight) = ?1 " +
+            "GROUP BY p.id HAVING COUNT(f.id) > 25 ) PC ON PC.id = P.id";
+
     public PassengerDAO() {
         super(Passenger.class);
     }
 
     public List<Passenger> regularPassengers(int year) {
-        String sql = "SELECT P.* FROM PASSENGER P " +
-                     "INNER JOIN ( " +
-                     "SELECT p.id, COUNT(f.id) FROM FLIGHT f " +
-                     "INNER JOIN FLIGHT_PASSENGER fp ON fp.flight_id = f.id " +
-                     "INNER JOIN PASSENGER p ON p.id = fp.passenger_id " +
-                     "WHERE EXTRACT(YEAR FROM f.date_flight) = ?1 " +
-                     "GROUP BY p.id HAVING COUNT(f.id) > 25 ) PC ON PC.id = P.id";
-
-        return entityManager.createNativeQuery(sql, Passenger.class)
+        return entityManager.createNativeQuery(findRegularPassengersQuery, Passenger.class)
                 .setParameter(1, year)
                 .getResultList();
     }

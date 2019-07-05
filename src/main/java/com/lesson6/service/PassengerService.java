@@ -28,7 +28,7 @@ public class PassengerService {
     public Passenger update(Passenger passenger) throws Exception {
         validate(passenger);
 
-        Passenger passengerDb = passengerDAO.findById(passenger.getId());
+        Passenger passengerDb = findById(passenger.getId());
         passengerDb.setLastName(passenger.getLastName());
         passengerDb.setNationality(passenger.getNationality());
         passengerDb.setDateOfBirth(passenger.getDateOfBirth());
@@ -39,13 +39,16 @@ public class PassengerService {
     }
 
     public void delete(long id) throws Exception {
-        Passenger passenger = passengerDAO.findById(id);
-
-        passengerDAO.delete(passenger);
+        passengerDAO.delete(findById(id));
     }
 
     public Passenger findById(long id) throws Exception {
-        return passengerDAO.findById(id);
+        Passenger passenger = passengerDAO.findById(id);
+        if (passenger == null) {
+            throw new BadRequestException("Error: passenger(id = " + id + ") was not found");
+        }
+
+        return passenger;
     }
 
     public List<Passenger> regularPassengers(int year) {

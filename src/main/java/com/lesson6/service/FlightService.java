@@ -38,7 +38,7 @@ public class FlightService {
     public Flight update(Flight flight) throws Exception {
         validate(flight);
 
-        Flight flightDb = flightDAO.findById(flight.getId());
+        Flight flightDb = findById(flight.getId());
         flightDb.setPlane(planeService.findById(flight.getPlane().getId()));
         flightDb.setDateFlight(flight.getDateFlight());
         flightDb.setCityFrom(flight.getCityFrom());
@@ -49,13 +49,16 @@ public class FlightService {
     }
 
     public void delete(long id) throws Exception {
-        Flight flight = flightDAO.findById(id);
-
-        flightDAO.delete(flight);
+        flightDAO.delete(findById(id));
     }
 
     public Flight findById(long id) throws Exception {
-        return flightDAO.findById(id);
+        Flight flight = flightDAO.findById(id);
+        if (flight == null) {
+            throw new BadRequestException("Error: flight(id = " + id + ") was not found");
+        }
+
+        return flight;
     }
 
     public List<String> mostPopularTo() {

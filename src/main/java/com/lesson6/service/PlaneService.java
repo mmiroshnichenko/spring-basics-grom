@@ -27,7 +27,7 @@ public class PlaneService {
     }
 
     public Plane update(Plane plane) throws Exception {
-        Plane planeDb = planeDAO.findById(plane.getId());
+        Plane planeDb = findById(plane.getId());
         planeDb.setModel(plane.getModel());
         planeDb.setCode(plane.getCode());
         planeDb.setYearProduced(plane.getYearProduced());
@@ -37,13 +37,16 @@ public class PlaneService {
     }
 
     public void delete(long id) throws Exception {
-        Plane plane = planeDAO.findById(id);
-
-        planeDAO.delete(plane);
+        planeDAO.delete(findById(id));
     }
 
     public Plane findById(long id) throws Exception {
-        return planeDAO.findById(id);
+        Plane plane = planeDAO.findById(id);
+        if (plane == null) {
+            throw new BadRequestException("Error: plane(id = " + id + ") was not found");
+        }
+
+        return plane;
     }
 
     public List<Plane> oldPlanes() {
