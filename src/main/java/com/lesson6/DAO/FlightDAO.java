@@ -41,8 +41,15 @@ public class FlightDAO extends BaseDAO<Flight> {
         CriteriaQuery<Flight> criteriaQuery = builder.createQuery(Flight.class);
         Root<Flight> root = criteriaQuery.from(Flight.class);
         List<Predicate> predicates = new ArrayList<>();
+        Join<Flight, Plane> planeJoin = root.join("plane");
 
-        if (filter.getDateFrom() != null && filter.getDateTo() != null) {
+        addPredicates(predicates, builder, root.get("dateFlight"), filter.getDateFrom(), Operator.GTE);
+        addPredicates(predicates, builder, root.get("dateFlight"), filter.getDateTo(), Operator.LTE);
+        addPredicates(predicates, builder, root.get("cityFrom"), filter.getCityFrom(), Operator.EQ);
+        addPredicates(predicates, builder, root.get("cityTo"), filter.getCityTo(), Operator.EQ);
+        addPredicates(predicates, builder, planeJoin.get("model"), filter.getModelPlane(), Operator.EQ);
+
+        /*if (filter.getDateFrom() != null && filter.getDateTo() != null) {
             predicates.add(builder.between(root.get("dateFlight"), filter.getDateFrom(), filter.getDateTo()));
         }
         if (filter.getCityFrom() != null) {
@@ -55,11 +62,39 @@ public class FlightDAO extends BaseDAO<Flight> {
             Join<Flight, Plane> planeJoin = root.join("plane");
             predicates.add(builder.equal(planeJoin.get("model"), filter.getModelPlane()));
         }
-
+*/
         criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
+    protected void addPredicates(List<Predicate> predicates, CriteriaBuilder builder, Path path, Object filterValue, Operator operator) {
+        if (filterValue == null) {
+            return;
+        }
 
+        switch (operator) {
+            case EQ:
+                predicates.add(builder.equal(path, filterValue));
+                break;
+            case NE:
+                predicates.add(builder.notEqual(path, filterValue));
+                break;
+            case LIKE:
+                predicates.add(builder.like(path, "%" + filterValue + "%"));
+                break;
+            case LT:
+                predicates.add(builder.lessThan(path, (Comparable) filterValue));
+                break;
+            case GT:
+                predicates.add(builder.greaterThan(path, (Comparable) filterValue));
+                break;
+            case LTE:
+                predicates.add(builder.lessThanOrEqualTo(path, (Comparable) filterValue));
+                break;
+            case GTE:
+                predicates.add(builder.greaterThanOrEqualTo(path, (Comparable) filterValue));
+                break;
+        }
+    }
 }
