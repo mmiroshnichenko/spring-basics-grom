@@ -42,11 +42,8 @@ public class FlightDAO extends BaseDAO<Flight> {
         Root<Flight> root = criteriaQuery.from(Flight.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (filter.getDateFrom() != null) {
-            predicates.add(builder.greaterThanOrEqualTo(root.get("dateFlight"), filter.getDateFrom()));
-        }
-        if (filter.getDateTo() != null) {
-            predicates.add(builder.lessThanOrEqualTo(root.get("dateFlight"), filter.getDateTo()));
+        if (filter.getDateFrom() != null && filter.getDateTo() != null) {
+            predicates.add(builder.between(root.get("dateFlight"), filter.getDateFrom(), filter.getDateTo()));
         }
         if (filter.getCityFrom() != null) {
             predicates.add(builder.equal(root.get("cityFrom"), filter.getCityFrom()));
@@ -63,4 +60,6 @@ public class FlightDAO extends BaseDAO<Flight> {
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
+
 }
