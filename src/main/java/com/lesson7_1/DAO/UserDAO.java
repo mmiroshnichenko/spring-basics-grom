@@ -1,5 +1,6 @@
 package com.lesson7_1.DAO;
 
+import com.lesson7_1.entity.Operator;
 import com.lesson7_1.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -24,8 +25,8 @@ public class UserDAO extends BaseDAO<User> {
         Root<User> root = criteriaQuery.from(User.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(builder.equal(root.get("userName"), userName));
-        predicates.add(builder.equal(root.get("password"), password));
+        addPredicates(predicates, builder, root.get("userName"), userName, Operator.EQ);
+        addPredicates(predicates, builder, root.get("password"), password, Operator.EQ);
 
         criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
         return entityManager.createQuery(criteriaQuery).getSingleResult();

@@ -1,9 +1,14 @@
 package com.lesson7_1.DAO;
 
+import com.lesson7_1.entity.Operator;
 import com.lesson7_1.exception.BadRequestException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import java.util.List;
 
 public class BaseDAO<T> {
     private Class<T> typeOfT;
@@ -33,5 +38,35 @@ public class BaseDAO<T> {
 
     public T findById(long id) {
         return entityManager.find(this.typeOfT, id);
+    }
+
+    protected void addPredicates(List<Predicate> predicates, CriteriaBuilder builder, Path path, Object filterValue, Operator operator) {
+        if (filterValue == null) {
+            return;
+        }
+
+        switch (operator) {
+            case EQ:
+                predicates.add(builder.equal(path, filterValue));
+                break;
+            case NE:
+                predicates.add(builder.notEqual(path, filterValue));
+                break;
+            case LIKE:
+                predicates.add(builder.like(path, "%" + filterValue + "%"));
+                break;
+            case LT:
+                predicates.add(builder.lessThan(path, (Comparable) filterValue));
+                break;
+            case GT:
+                predicates.add(builder.greaterThan(path, (Comparable) filterValue));
+                break;
+            case LTE:
+                predicates.add(builder.lessThanOrEqualTo(path, (Comparable) filterValue));
+                break;
+            case GTE:
+                predicates.add(builder.greaterThanOrEqualTo(path, (Comparable) filterValue));
+                break;
+        }
     }
 }

@@ -43,7 +43,7 @@ public class AdvertisementService {
     public Advertisement update(Advertisement advertisement) throws Exception {
         validate(advertisement);
 
-        Advertisement advertisementDb = advertisementDAO.findById(advertisement.getId());
+        Advertisement advertisementDb = findById(advertisement.getId());
         advertisementDb.setUser(userService.findById(advertisement.getUser().getId()));
         advertisementDb.setTitle(advertisement.getTitle());
         advertisementDb.setDescription(advertisement.getDescription());
@@ -58,13 +58,15 @@ public class AdvertisementService {
     }
 
     public void delete(long id) throws Exception {
-        Advertisement advertisement = advertisementDAO.findById(id);
-
-        advertisementDAO.delete(advertisement);
+        advertisementDAO.delete(findById(id));
     }
 
     public Advertisement findById(long id) throws Exception {
-        return advertisementDAO.findById(id);
+        Advertisement advertisement = advertisementDAO.findById(id);
+        if (advertisement == null) {
+            throw new BadRequestException("Error: advertisement(id: " + id + ") was not found");
+        }
+        return advertisement;
     }
 
     public List<Advertisement> list(Filter filter) {

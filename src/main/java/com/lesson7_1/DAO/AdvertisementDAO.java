@@ -2,6 +2,7 @@ package com.lesson7_1.DAO;
 
 import com.lesson7_1.entity.Advertisement;
 import com.lesson7_1.entity.Filter;
+import com.lesson7_1.entity.Operator;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
@@ -27,33 +28,16 @@ public class AdvertisementDAO extends BaseDAO<Advertisement> {
         Root<Advertisement> root = criteriaQuery.from(Advertisement.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        predicates.add(builder.greaterThan(root.get("dateExpired"), new Date()));
-        boolean filterExec = false;
-        if (filter.getKeyWord() != null) {
-            predicates.add(builder.like(root.get("description"), "%" + filter.getKeyWord() + "%"));
-            filterExec = true;
-        }
-        if (filter.getCity() != null) {
-            predicates.add(builder.equal(root.get("city"), filter.getCity()));
-            filterExec = true;
-        }
-        if (filter.getCategory() != null) {
-            predicates.add(builder.equal(root.get("category"), filter.getCategory().toString()));
-            filterExec = true;
-        }
-        if (filter.getSubcategory() != null) {
-            predicates.add(builder.equal(root.get("subcategory"), filter.getSubcategory().toString()));
-            filterExec = true;
-        }
+        addPredicates(predicates, builder, root.get("dateExpired"), new Date(), Operator.GT);
+        addPredicates(predicates, builder, root.get("description"), filter.getKeyWord(), Operator.LIKE);
+        addPredicates(predicates, builder, root.get("city"), filter.getCity(), Operator.EQ);
+        addPredicates(predicates, builder, root.get("category"), filter.getCategory().toString(), Operator.EQ);
+        addPredicates(predicates, builder, root.get("subcategory"), filter.getSubcategory().toString(), Operator.EQ);
+
         criteriaQuery.orderBy(builder.desc(root.get("dateCreated")));
 
         criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
 
-        TypedQuery<Advertisement> query = entityManager.createQuery(criteriaQuery);
-        if (!filterExec) {
-            query.setMaxResults(100);
-        }
-
-        return query.getResultList();
+        return entityManager.createQuery(criteriaQuery).setMaxResults(100).getResultList();
     }
 }
