@@ -23,21 +23,17 @@ public class AdvertisementDAO extends BaseDAO<Advertisement> {
     }
 
     public List<Advertisement> list(Filter filter) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Advertisement> criteriaQuery = builder.createQuery(Advertisement.class);
-        Root<Advertisement> root = criteriaQuery.from(Advertisement.class);
-        List<Predicate> predicates = new ArrayList<>();
 
-        addPredicates(predicates, builder, root.get("dateExpired"), new Date(), Operator.GT);
-        addPredicates(predicates, builder, root.get("description"), filter.getKeyWord(), Operator.LIKE);
-        addPredicates(predicates, builder, root.get("city"), filter.getCity(), Operator.EQ);
-        addPredicates(predicates, builder, root.get("category"), filter.getCategory().toString(), Operator.EQ);
-        addPredicates(predicates, builder, root.get("subcategory"), filter.getSubcategory().toString(), Operator.EQ);
+        startFilter();
+
+        addPredicates(root.get("dateExpired"), new Date(), Operator.GT);
+        addPredicates(root.get("description"), filter.getKeyWord(), Operator.LIKE);
+        addPredicates(root.get("city"), filter.getCity(), Operator.EQ);
+        addPredicates(root.get("category"), filter.getCategory().toString(), Operator.EQ);
+        addPredicates(root.get("subcategory"), filter.getSubcategory().toString(), Operator.EQ);
 
         criteriaQuery.orderBy(builder.desc(root.get("dateCreated")));
 
-        criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
-
-        return entityManager.createQuery(criteriaQuery).setMaxResults(100).getResultList();
+        return getFilteredList(100);
     }
 }

@@ -20,15 +20,11 @@ public class UserDAO extends BaseDAO<User> {
     }
 
     public User authenticateUser(String userName, String password) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
-        Root<User> root = criteriaQuery.from(User.class);
-        List<Predicate> predicates = new ArrayList<>();
+        startFilter();
 
-        addPredicates(predicates, builder, root.get("userName"), userName, Operator.EQ);
-        addPredicates(predicates, builder, root.get("password"), password, Operator.EQ);
+        addPredicates(root.get("userName"), userName, Operator.EQ);
+        addPredicates(root.get("password"), password, Operator.EQ);
 
-        criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
-        return entityManager.createQuery(criteriaQuery).getSingleResult();
+        return getSingleResult();
     }
 }

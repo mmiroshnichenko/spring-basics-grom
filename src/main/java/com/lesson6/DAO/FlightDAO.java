@@ -37,20 +37,16 @@ public class FlightDAO extends BaseDAO<Flight> {
     }
 
     public List<Flight> flightsByDate(Filter filter) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Flight> criteriaQuery = builder.createQuery(Flight.class);
-        Root<Flight> root = criteriaQuery.from(Flight.class);
-        List<Predicate> predicates = new ArrayList<>();
+        startFilter();
+
         Join<Flight, Plane> planeJoin = root.join("plane");
 
-        addPredicates(predicates, builder, root.get("dateFlight"), filter.getDateFrom(), Operator.GTE);
-        addPredicates(predicates, builder, root.get("dateFlight"), filter.getDateTo(), Operator.LTE);
-        addPredicates(predicates, builder, root.get("cityFrom"), filter.getCityFrom(), Operator.EQ);
-        addPredicates(predicates, builder, root.get("cityTo"), filter.getCityTo(), Operator.EQ);
-        addPredicates(predicates, builder, planeJoin.get("model"), filter.getModelPlane(), Operator.EQ);
+        addPredicates(root.get("dateFlight"), filter.getDateFrom(), Operator.GTE);
+        addPredicates(root.get("dateFlight"), filter.getDateTo(), Operator.LTE);
+        addPredicates(root.get("cityFrom"), filter.getCityFrom(), Operator.EQ);
+        addPredicates(root.get("cityTo"), filter.getCityTo(), Operator.EQ);
+        addPredicates(planeJoin.get("model"), filter.getModelPlane(), Operator.EQ);
 
-        criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
-
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        return getFilteredList();
     }
 }

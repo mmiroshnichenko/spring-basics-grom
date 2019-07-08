@@ -5,14 +5,18 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class BaseDAO<T> {
     private Class<T> typeOfT;
+
+    CriteriaBuilder builder;
+    CriteriaQuery<T> criteriaQuery;
+    Root<T> root;
+    List<Predicate> predicates;
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -41,7 +45,14 @@ public class BaseDAO<T> {
         return entityManager.find(this.typeOfT, id);
     }
 
-    protected void addPredicates(List<Predicate> predicates, CriteriaBuilder builder, Path path, Object filterValue, Operator operator) {
+    protected void startFilter() {
+        builder = entityManager.getCriteriaBuilder();
+        criteriaQuery = builder.createQuery(this.typeOfT);
+        root = criteriaQuery.from(this.typeOfT);
+        predicates = new ArrayList<>();
+    }
+
+    protected void addPredicates(Path path, Object filterValue, Operator operator) {
         if (filterValue == null) {
             return;
         }
@@ -69,5 +80,12 @@ public class BaseDAO<T> {
                 predicates.add(builder.greaterThanOrEqualTo(path, (Comparable) filterValue));
                 break;
         }
+    }
+
+    protected List<T> getFilteredList()
+    {
+        criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }
