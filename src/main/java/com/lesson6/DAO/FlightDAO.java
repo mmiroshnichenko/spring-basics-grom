@@ -43,9 +43,10 @@ public class FlightDAO extends BaseDAO<Flight> {
 
         addPredicates(root.get("dateFlight"), filter.getDateFrom(), Operator.GTE);
         addPredicates(root.get("dateFlight"), filter.getDateTo(), Operator.LTE);
-        addPredicates(root.get("cityFrom"), filter.getCityFrom(), Operator.EQ);
-        addPredicates(root.get("cityTo"), filter.getCityTo(), Operator.EQ);
-        addPredicates(planeJoin.get("model"), filter.getModelPlane(), Operator.EQ);
+        addArrayEqualPredicates(
+            new Path[]{root.get("cityFrom"), root.get("cityTo"), planeJoin.get("model")},
+            new Object[]{filter.getCityFrom(), filter.getCityTo(), filter.getModelPlane()}
+        );
 
         return getFilteredList();
     }

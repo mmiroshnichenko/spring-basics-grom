@@ -82,6 +82,12 @@ public class BaseDAO<T> {
         }
     }
 
+    protected void addArrayEqualPredicates(Path[] paths, Object[] filterValues) {
+        for (int i = 0; i < paths.length; i++) {
+            addPredicates(paths[i], filterValues[i], Operator.EQ);
+        }
+    }
+
     protected List<T> getFilteredList()
     {
         criteriaQuery.select(root).where(predicates.toArray(new Predicate[predicates.size()]));
